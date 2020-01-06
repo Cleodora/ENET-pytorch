@@ -129,26 +129,3 @@ class ENETBottleNeck(nn.Module):
         if self.downsampling:
             return Final, max_indices
         return Final
-        
-
-        
-
-
-        
-            
-            
-            
-            
-
-
-
-
-
-
-
-
-
-
-
-
-

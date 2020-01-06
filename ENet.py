@@ -54,58 +54,8 @@ class EnetInitialBlock(nn.Module):
         return concat
 
 
-class DownSamplingBottleNeck(nn.Module):
 
-    def init(self, in_channels, out_channels, internal_channels, activation_function, dropout_prob):
-        self.in_channels = in_channels
-        self.out_channels = out_channels
-        self.maxpool = maxpool_2x2()
-        self.initial_block = initial_block(in_channels, internal_channels, conv_type = 'downsampling')
-        self.batch_norm1, self.activation1 = batch_norm_activation(internal_channels, activation_function)
-        self.middle_block = middle_block(internal_channels, internal_channels)
-        self.batch_norm2, self.activation2 = batch_norm_activation(internal_channels, activation_function)
-        self.final_block = initial_block(internal_channels, out_channels)
-        self.batch_norm3, self.activation3 = batch_norm_activation(out_channels, activation_function)
-        self.dropout = dropout(dropout_prob)
-        self.activation = activation_function()
-    
-    def forward(self, input):
-        main, max_indices = self.maxpool(input)
-        input_size = input.size()
-
-        secondary = self.initial_block(input)
-        secondary = self.batch_norm1(secondary)
-        secondary = self.activation1(secondary)
-
-        secondary = self.middle_block(secondary)
-        secondary = self.batch_norm2(secondary)
-        secondary = self.activation2(secondary)
-
-        secondary = self.final_block(secondary)
-        secondary = self.batch_norm3(secondary)
-        secondary = self.activation3(secondary)
-
-
-
-        if self.in_channels != self.out_channels:
-            padding = torch.zeros(
-                input_size[0],
-                self.out_channels - self.in_channels,
-                input_size[2] // 2,
-                input_size[3] // 2
-            )
-            if main.is_cuda:
-                padding = padding.cuda()
-
-            concatenate = torch.cat((main, padding), 1)
-            final_merge = concatenate + secondary
-        else:    
-            final_merge = main + secondary
-        
-        return final_merge, max_indices
-
-
-class BottleNeck(nn.Module):
+class ENETBottleNeck(nn.Module):
 
     def init(self, in_channels, out_channels, internal_channels, activation_function, dropout_prob, downsampling = False,upsampling = False, dilation = False, dilation_rate = 1, assymetric  = False  ):
         self.in_channels = in_channels

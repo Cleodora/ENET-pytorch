@@ -125,7 +125,8 @@ class ENETBottleNeck(nn.Module):
         else:
             secondary = input + secondary
         
-        Final = F.PReLU(secondary)
+        secondary = self.dropout(secondary)
+        Final = self.activation(secondary)
         if self.downsampling:
             return Final, max_indices
         return Final

@@ -57,7 +57,7 @@ class EnetInitialBlock(nn.Module):
 
 class ENETBottleNeck(nn.Module):
 
-    def init(self, in_channels, out_channels, internal_channels, activation_function, dropout_prob, downsampling = False,upsampling = False, dilation = False, dilation_rate = 1, assymetric  = False  ):
+    def init(self, in_channels: int, out_channels: int, internal_channels: int, activation_function, dropout_prob: float, downsampling: bool = False,upsampling: bool = False, dilation: bool = False, asymmetric: bool  = False, dilation_rate: int = 1):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.downsampling = downsampling
@@ -74,7 +74,7 @@ class ENETBottleNeck(nn.Module):
             self.middle_block = ConvTranspose2_2x2(internal_channels, internal_channels)
         elif dilation:
             self.middle_block = middle_block(internal_channels, internal_channels, dilation_rate = dilation_rate)
-        elif assymetric:
+        elif asymmetric:
             self.middle_block = middle_block_assymetric(internal_channels)
         else:
             self.middle_block = middle_block(internal_channels, internal_channels)
